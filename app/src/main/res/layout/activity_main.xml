@@ -40,7 +40,7 @@
             android:text="@string/Browser" />
 
     </LinearLayout>
-    
+
     <TextView
         android:id="@+id/textHello"
         android:layout_width="match_parent"

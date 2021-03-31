@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-       Button btnBrowser = findViewById(R.id.btnBrowser);
-       btnBrowser.setOnClickListener(view -> {
+       findViewById(R.id.btnBrowser).setOnClickListener(view -> {
            startActivity(new Intent(MainActivity.this, BrowserActivity.class));
        });
 
