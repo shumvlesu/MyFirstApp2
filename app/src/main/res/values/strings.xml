@@ -11,4 +11,6 @@
 
     <string name="defaultUrl" translatable="false">https://geekbrains.ru</string>
     <string name="go" translatable="false">go</string>
+    <string name="Browser" translatable="false">browser</string>
+    <string name="Camera" translatable="false">Camera</string>
 </resources>

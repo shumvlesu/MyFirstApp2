@@ -1,7 +1,9 @@
 package com.shumikhin.myfirstapp2;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -58,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+
+       Button btnBrowser = findViewById(R.id.btnBrowser);
+       btnBrowser.setOnClickListener(view -> {
+           startActivity(new Intent(MainActivity.this, BrowserActivity.class));
+       });
 
     }
 
