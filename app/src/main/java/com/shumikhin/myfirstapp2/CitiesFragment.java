@@ -1,5 +1,6 @@
 package com.shumikhin.myfirstapp2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,14 +45,36 @@ public class CitiesFragment extends Fragment {
     private void initView(View view) {
         LinearLayout layoutView = (LinearLayout) view;
         String[] cities = getResources().getStringArray(R.array.cities);
-        // В этом цикле создаём элемент TextView, заполняем его значениями, и добавляем на экран.
+        // В этом цикле создаём элемент TextView,
+        // заполняем его значениями
+        // и добавляем на экран.
         // Кроме того, создаём обработку касания на элемент
-        for (String city : cities) {
+        for (int i = 0; i < cities.length; i++) {
+            String city = cities[i];
             TextView tv = new TextView(getContext());
             tv.setText(city);
             tv.setTextSize(30);
             layoutView.addView(tv);
+            final int fi = i;
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPortCoatOfArms(fi);
+                }
+            });
+
+
         }
+    }
+
+    // Показать герб в портретной ориентации.
+    private void showPortCoatOfArms(int index) {
+        // Откроем вторую activity
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), CoatOfArmsActivity.class);
+        // и передадим туда параметры
+        intent.putExtra(CoatOfArmsFragment.ARG_INDEX, index);
+        startActivity(intent);
     }
 
 
