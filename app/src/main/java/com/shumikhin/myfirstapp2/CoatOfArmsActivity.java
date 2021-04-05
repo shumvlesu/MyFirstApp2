@@ -18,7 +18,7 @@ public class CoatOfArmsActivity extends AppCompatActivity {
             return;
         }
 
-        //Здесь fragment мы программно в активити содаем а там только контейнер описываем в xml c id - fragment_container
+        //Здесь fragment мы программно в активити содаем, а там только контейнер описываем в xml c id - fragment_container
         //Чтобы программно вставить фрагмент, надо получить «Менеджер фрагментов», затем открыть
         //транзакцию, вставить макет и закрыть транзакцию. Метод работы, как видим, транзакционный. Мы
         //можем сделать несколько действий в одной транзакции, например один макет удалить, второй
@@ -26,6 +26,7 @@ public class CoatOfArmsActivity extends AppCompatActivity {
         //getSupportFragmentManager(). Метод getFragmentManager() становится устаревшим, начиная
         //с API 28.
 
+        //в первый раз то savedInstanceState == null истина
         if (savedInstanceState == null) {
             // Если эта activity запускается первый раз (с каждым новым гербом первый раз),
             // то перенаправим параметр фрагменту

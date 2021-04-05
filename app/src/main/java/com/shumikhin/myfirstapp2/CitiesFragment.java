@@ -1,6 +1,7 @@
 package com.shumikhin.myfirstapp2;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,36 +12,52 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CitiesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CitiesFragment extends Fragment {
 
-    // TODO: Rename and change types and number of parameters
-    public static CitiesFragment newInstance(String param1, String param2) {
-        CitiesFragment fragment = new CitiesFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    //Вызывается, когда view фрагмента создан. В качестве
-    //аргумента приходит сам view, у которого можно находить и инициализировать компоненты:
-    //view.findViewById(...).
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initView(view);
-    }
+    public static final String CURRENT_CITY = "CurrentCity";
+    private int currentPosition = 0; // Текущая позиция (выбранный город)
+    private boolean isLandscape;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_cities, container, false);
     }
+
+    //Вызывается, когда view фрагмента создан. В качестве
+    //аргумента приходит сам view, у которого можно находить и инициализировать компоненты:
+    //view.findViewById(...).
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Определение, можно ли будет расположить рядом герб в другом фрагменте
+        isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        initView(view);
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Если это не первое создание, то восстановим текущую позицию
+        if (savedInstanceState != null) {
+            // Восстановление текущей позиции.
+            currentPosition = savedInstanceState.getInt(CURRENT_CITY);
+        }
+
+        // Если можно нарисовать рядом герб, то сделаем это
+        if (isLandscape) {
+            showLandCoatOfArms(currentPosition);
+        }
+    }
+
 
     private void initView(View view) {
         LinearLayout layoutView = (LinearLayout) view;
@@ -55,16 +72,56 @@ public class CitiesFragment extends Fragment {
             tv.setText(city);
             tv.setTextSize(30);
             layoutView.addView(tv);
-            final int fi = i;
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showPortCoatOfArms(fi);
-                }
+            final int index = i;
+            tv.setOnClickListener(v -> {
+//                // Откроем вторую activity
+//                Intent intent = new Intent();
+//                intent.setClass(getActivity(), CoatOfArmsActivity.class);
+//                // и передадим туда параметры
+//                intent.putExtra(CoatOfArmsFragment.ARG_INDEX, index);
+//                startActivity(intent);
+                currentPosition = index;
+                showCoatOfArms(currentPosition);
             });
-
-
         }
+    }
+
+    // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(CURRENT_CITY, currentPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+
+    private void showCoatOfArms(int index) {
+        if (isLandscape) {
+            showLandCoatOfArms(index);
+        } else {
+            showPortCoatOfArms(index);
+        }
+    }
+
+    // Показать герб в ландшафтной ориентации
+    private void showLandCoatOfArms(int index) {
+        // Создаём новый фрагмент с текущей позицией для вывода герба с помощью фабричного метода (название паттерна).
+        //Фабричый метод это метод который работает с объектом до его собственно создания.
+        //тут я до создания объекта уже задаю для него индекс картинки герба. что бы при создании фрагмента он указал мне на нужный герб.
+        CoatOfArmsFragment detail = CoatOfArmsFragment.newInstance(index);
+
+        // Выполняем транзакцию по замене фрагмента
+        requireActivity().getSupportFragmentManager() //
+                .beginTransaction() //фрагмент меняется в транзакции
+                .replace(R.id.coat_of_arms, detail) // замена фрагмента
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE) //тип анимации замены транзакции
+                .commit();
+
+        //менее читаемый вид
+        //FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //fragmentTransaction.replace(R.id.coat_of_arms, detail); // замена фрагмента
+        //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        //fragmentTransaction.commit();
     }
 
     // Показать герб в портретной ориентации.
