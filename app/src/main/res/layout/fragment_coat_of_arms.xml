@@ -6,9 +6,18 @@
     android:orientation="vertical"
     tools:context=".CoatOfArmsFragment">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="30sp" />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/coat_of_arms"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/msc" />
+
 </LinearLayout>
+

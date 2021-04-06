@@ -18,7 +18,8 @@ import androidx.fragment.app.FragmentTransaction;
 public class CitiesFragment extends Fragment {
 
     public static final String CURRENT_CITY = "CurrentCity";
-    private int currentPosition = 0; // Текущая позиция (выбранный город)
+    //private int currentPosition = 0; // Текущая позиция (выбранный город)
+    private City currentCity;
     private boolean isLandscape;
 
     @Override
@@ -49,12 +50,19 @@ public class CitiesFragment extends Fragment {
         // Если это не первое создание, то восстановим текущую позицию
         if (savedInstanceState != null) {
             // Восстановление текущей позиции.
-            currentPosition = savedInstanceState.getInt(CURRENT_CITY);
+            //currentPosition = savedInstanceState.getInt(CURRENT_CITY);
+            currentCity = savedInstanceState.getParcelable(CURRENT_CITY);
+        } else {
+            // Если восстановить не удалось, то сделаем объект с первым индексом
+            currentCity = new City(0, getResources().getStringArray(R.array.cities)[0]);
         }
+
+
 
         // Если можно нарисовать рядом герб, то сделаем это
         if (isLandscape) {
-            showLandCoatOfArms(currentPosition);
+            //showLandCoatOfArms(currentPosition);
+            showLandCoatOfArms(currentCity);
         }
     }
 
@@ -80,8 +88,13 @@ public class CitiesFragment extends Fragment {
 //                // и передадим туда параметры
 //                intent.putExtra(CoatOfArmsFragment.ARG_INDEX, index);
 //                startActivity(intent);
-                currentPosition = index;
-                showCoatOfArms(currentPosition);
+
+                //currentPosition = index;
+                //showCoatOfArms(currentPosition);
+
+                currentCity = new City(index, getResources().getStringArray(R.array.cities)[index]);
+                showCoatOfArms(currentCity);
+
             });
         }
     }
@@ -89,25 +102,32 @@ public class CitiesFragment extends Fragment {
     // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(CURRENT_CITY, currentPosition);
+        //outState.putInt(CURRENT_CITY, currentPosition);
+
+        outState.putParcelable(CURRENT_CITY, currentCity);
         super.onSaveInstanceState(outState);
     }
 
 
-    private void showCoatOfArms(int index) {
+    //private void showCoatOfArms(int index) {
+    private void showCoatOfArms(City currentCity) {
         if (isLandscape) {
-            showLandCoatOfArms(index);
+            //showLandCoatOfArms(index);
+            showLandCoatOfArms(currentCity);
         } else {
-            showPortCoatOfArms(index);
+            //showPortCoatOfArms(index);
+            showPortCoatOfArms(currentCity);
         }
     }
 
     // Показать герб в ландшафтной ориентации
-    private void showLandCoatOfArms(int index) {
+    //private void showLandCoatOfArms(int index) {
+    private void showLandCoatOfArms(City currentCity) {
         // Создаём новый фрагмент с текущей позицией для вывода герба с помощью фабричного метода (название паттерна).
         //Фабричый метод это метод который работает с объектом до его собственно создания.
         //тут я до создания объекта уже задаю для него индекс картинки герба. что бы при создании фрагмента он указал мне на нужный герб.
-        CoatOfArmsFragment detail = CoatOfArmsFragment.newInstance(index);
+        //CoatOfArmsFragment detail = CoatOfArmsFragment.newInstance(index);
+        CoatOfArmsFragment detail = CoatOfArmsFragment.newInstance(currentCity);
 
         // Выполняем транзакцию по замене фрагмента
         requireActivity().getSupportFragmentManager() //
@@ -125,12 +145,14 @@ public class CitiesFragment extends Fragment {
     }
 
     // Показать герб в портретной ориентации.
-    private void showPortCoatOfArms(int index) {
+    //private void showPortCoatOfArms(int index) {
+    private void showPortCoatOfArms(City currentCity) {
         // Откроем вторую activity
         Intent intent = new Intent();
         intent.setClass(getActivity(), CoatOfArmsActivity.class);
         // и передадим туда параметры
-        intent.putExtra(CoatOfArmsFragment.ARG_INDEX, index);
+        //intent.putExtra(CoatOfArmsFragment.ARG_INDEX, index);
+        intent.putExtra(CoatOfArmsFragment.ARG_CITY, currentCity);
         startActivity(intent);
     }
 
