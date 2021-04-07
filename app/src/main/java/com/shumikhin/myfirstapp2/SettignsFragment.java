@@ -32,11 +32,13 @@ public class SettignsFragment extends Fragment {
         initSwitchDeleteBeforeAdd(view);
     }
 
-    private void initRadioReplace(View view) {
-        RadioButton radioButtonReplace = view.findViewById(R.id.radioButtonReplace);
-        radioButtonReplace.setChecked(!Settings.isAddFragment);
-        radioButtonReplace.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Settings.isAddFragment = !isChecked;
+    private void initSwitchBackStack(View view) {
+        // Элемент пользовательского интерфейса — переключатель
+        // По функционалу очень похож на CheckBox, но имеет другой дизайн
+        SwitchCompat switchUseBackStack = view.findViewById(R.id.switchBackStack);
+        switchUseBackStack.setChecked(Settings.isBackStack);
+        switchUseBackStack.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Settings.isBackStack = isChecked;
             writeSettings();
         });
     }
@@ -50,13 +52,11 @@ public class SettignsFragment extends Fragment {
         });
     }
 
-    private void initSwitchBackStack(View view) {
-        // Элемент пользовательского интерфейса — переключатель
-        // По функционалу очень похож на CheckBox, но имеет другой дизайн
-        SwitchCompat switchUseBackStack = view.findViewById(R.id.switchBackStack);
-        switchUseBackStack.setChecked(Settings.isBackStack);
-        switchUseBackStack.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Settings.isBackStack = isChecked;
+    private void initRadioReplace(View view) {
+        RadioButton radioButtonReplace = view.findViewById(R.id.radioButtonReplace);
+        radioButtonReplace.setChecked(!Settings.isAddFragment);
+        radioButtonReplace.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Settings.isAddFragment = !isChecked;
             writeSettings();
         });
     }
