@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
 import androidx.annotation.Nullable;
@@ -90,14 +89,23 @@ public class SettignsFragment extends Fragment {
         //requireActivity - берем контекст активити связаной с нашим фрагментом
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(Settings.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         // Настройки сохраняются посредством специального класса editor
-        SharedPreferences.Editor editor = sharedPref.edit();//edit() - начали транзакцию, открыли файл.
+        //SharedPreferences.Editor editor = sharedPref.edit();//edit() - начали транзакцию, открыли файл.
         // Задаём значения настроек. Парцебл класс мы положить в шаред преференс не можем.
-        editor.putBoolean(Settings.IS_BACK_STACK_USED, Settings.isBackStack);
-        editor.putBoolean(Settings.IS_ADD_FRAGMENT_USED, Settings.isAddFragment);
-        editor.putBoolean(Settings.IS_BACK_AS_REMOVE_FRAGMENT, Settings.isBackAsRemove);
-        editor.putBoolean(Settings.IS_DELETE_FRAGMENT_BEFORE_ADD, Settings.isDeleteBeforeAdd);
-        // Сохраняем значения настроек
-        editor.apply();
+        //editor.putBoolean(Settings.IS_BACK_STACK_USED, Settings.isBackStack);
+        //editor.putBoolean(Settings.IS_ADD_FRAGMENT_USED, Settings.isAddFragment);
+        //editor.putBoolean(Settings.IS_BACK_AS_REMOVE_FRAGMENT, Settings.isBackAsRemove);
+        //editor.putBoolean(Settings.IS_DELETE_FRAGMENT_BEFORE_ADD, Settings.isDeleteBeforeAdd);
+        // Сохраняем значения настроек. транзакция закрывается
+        //editor.apply();
+
+        //более компактное исполнение
+        sharedPref.edit().putBoolean(Settings.IS_BACK_STACK_USED, Settings.isBackStack)
+                .putBoolean(Settings.IS_ADD_FRAGMENT_USED, Settings.isAddFragment)
+                .putBoolean(Settings.IS_BACK_AS_REMOVE_FRAGMENT, Settings.isBackAsRemove)
+                .putBoolean(Settings.IS_DELETE_FRAGMENT_BEFORE_ADD, Settings.isDeleteBeforeAdd).apply();
+
+
+
     }
 
 }
