@@ -87,6 +87,7 @@ public class SettignsFragment extends Fragment {
     // Сохранение настроек приложения
     private void writeSettings() {
         // Специальный класс для хранения настроек
+        //requireActivity - берем контекст активити связаной с нашим фрагментом
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(Settings.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         // Настройки сохраняются посредством специального класса editor
         SharedPreferences.Editor editor = sharedPref.edit();
