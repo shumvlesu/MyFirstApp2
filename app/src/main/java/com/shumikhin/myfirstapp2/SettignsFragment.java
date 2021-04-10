@@ -87,10 +87,11 @@ public class SettignsFragment extends Fragment {
     // Сохранение настроек приложения
     private void writeSettings() {
         // Специальный класс для хранения настроек
+        //requireActivity - берем контекст активити связаной с нашим фрагментом
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(Settings.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         // Настройки сохраняются посредством специального класса editor
-        SharedPreferences.Editor editor = sharedPref.edit();
-        // Задаём значения настроек
+        SharedPreferences.Editor editor = sharedPref.edit();//edit() - начали транзакцию, открыли файл.
+        // Задаём значения настроек. Парцебл класс мы положить в шаред преференс не можем.
         editor.putBoolean(Settings.IS_BACK_STACK_USED, Settings.isBackStack);
         editor.putBoolean(Settings.IS_ADD_FRAGMENT_USED, Settings.isAddFragment);
         editor.putBoolean(Settings.IS_BACK_AS_REMOVE_FRAGMENT, Settings.isBackAsRemove);
