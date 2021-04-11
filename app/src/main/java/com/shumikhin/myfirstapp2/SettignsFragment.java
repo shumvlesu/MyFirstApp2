@@ -105,7 +105,6 @@ public class SettignsFragment extends Fragment {
                 .putBoolean(Settings.IS_DELETE_FRAGMENT_BEFORE_ADD, Settings.isDeleteBeforeAdd).apply();
 
 
-
     }
 
 }
