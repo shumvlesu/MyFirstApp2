@@ -15,6 +15,8 @@ import com.shumikhin.myfirstapp2.R;
 public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdapter.ViewHolder> {
 
     private String[] dataSource;
+    private OnItemClickListener itemClickListener; // Слушатель будет устанавливаться извне
+
 
     // Передаём в конструктор источник данных
     // В нашем случае это массив, но может быть и запрос к БД
@@ -60,11 +62,40 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = (TextView) itemView;
+
+            //Область текста ответственная на обработку нажатий+++++++
+            // Обработчик нажатий на этом ViewHolder
+            textView.setOnClickListener(v -> {
+                if (itemClickListener != null) {
+                    itemClickListener.onItemClick(v, getAdapterPosition());
+                }
+            });
+            //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
         }
 
         public TextView getTextView() {
             return textView;
         }
+
     }
 
+
+    //Область текста ответственная на обработку нажатий+++++++
+
+    // Сеттер слушателя нажатий
+    public void SetOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    // Интерфейс для обработки нажатий, как в ListView
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 }
+
+
+
