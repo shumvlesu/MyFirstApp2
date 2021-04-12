@@ -21,8 +21,13 @@ public class SocialNetworkFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_socialnetwork, container, false);
+
+        //ищем наш ресайкл вью у фрагмента
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
+
+        //Заполняем массив из нашего arrays
         String[] data = getResources().getStringArray(R.array.titles);
+        //Инициализируем менеджер для recyclerView в отдельном методе, так удобней
         initRecyclerView(recyclerView, data);
         return view;
     }
@@ -30,11 +35,18 @@ public class SocialNetworkFragment extends Fragment {
     private void initRecyclerView(RecyclerView recyclerView, String[] data) {
         // Эта установка служит для повышения производительности системы
         recyclerView.setHasFixedSize(true);
+
         // Будем работать со встроенным менеджером
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        //layoutManager можно задать и в макете строкой как внизу, но это неудобно
+        //например - app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+
         // Установим адаптер
+        // В адапторе мы заполняем данные из массива
         SocialNetworkAdapter adapter = new SocialNetworkAdapter(data);
+
         recyclerView.setAdapter(adapter);
     }
 }

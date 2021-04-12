@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         // Открыть транзакцию
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.replace(R.id.my_fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         // Закрыть транзакцию
         fragmentTransaction.commit();

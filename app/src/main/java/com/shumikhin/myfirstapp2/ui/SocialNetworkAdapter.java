@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shumikhin.myfirstapp2.R;
 
+
+//это класс для управления адаптером
 public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdapter.ViewHolder> {
 
     private String[] dataSource;
@@ -43,6 +45,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
     }
 
     // Вернуть размер данных, вызывается менеджером
+    //число итемов не должно быть больше числа строк массива
     @Override
     public int getItemCount() {
         return dataSource.length;
