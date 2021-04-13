@@ -1,8 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--это элемент списка-->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textView"
-    android:layout_width="wrap_content"
+<?xml version="1.0" encoding="utf-8"?><!--это элемент списка-->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="@dimen/sizeItemList">
-</TextView>
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="15dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    app:cardElevation="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/design_default_color_error"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/heightImage"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            tools:src="@drawable/cat1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/like"
+                style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:button="@drawable/ic_baseline_check_circle_outline_24" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="Title"
+                android:textColor="@color/cardview_light_background"
+                android:textSize="@dimen/textTitle"
+                android:layout_margin="4dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Description"
+            android:textColor="#FFF8E1"
+            android:textSize="@dimen/textDescription"
+            android:layout_margin="4dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
