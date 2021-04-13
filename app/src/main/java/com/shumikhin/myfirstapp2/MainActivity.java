@@ -3,7 +3,6 @@ package com.shumikhin.myfirstapp2;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -17,14 +16,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initToolbar();
         //закидываем фрагмент на активити
         addFragment(SocialNetworkFragment.newInstance());
-    }
-
-    private void initToolbar() {
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
     }
 
     private void addFragment(Fragment fragment) {

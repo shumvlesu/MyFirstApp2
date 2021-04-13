@@ -51,6 +51,8 @@ public class SocialNetworkFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
+
+        
         //Область текста ответственная на обработку нажатий+++++++
         // Установим слушателя
         adapter.SetOnItemClickListener(new SocialNetworkAdapter.OnItemClickListener() {
