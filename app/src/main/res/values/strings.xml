@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">MyFirstApp2</string>
+    <string name="title1">Ананас</string>
+    <string name="title2">Буся</string>
+    <string name="title3">Кузя</string>
+    <string name="title4">Васька</string>
+    <string name="title5">Туман</string>
+    <string name="title6">Мусик</string>
+    <string name="title7">Персик</string>
+    <string name="description1">Сказочный котик</string>
+    <string name="description2">Одинокий кот</string>
+    <string name="description3">Бурный кот в лесу</string>
+    <string name="description4">Красивое кисо</string>
+    <string name="description5">Мистический кiт</string>
+    <string name="description6">Солнечная киса</string>
+    <string name="description7">Красная котя</string>
 </resources>
