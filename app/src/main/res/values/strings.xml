@@ -14,4 +14,6 @@
     <string name="description5">Мистический кiт</string>
     <string name="description6">Солнечная киса</string>
     <string name="description7">Красная котя</string>
+    <string name="add">Добавить</string>
+    <string name="clear">Очистить</string>
 </resources>
