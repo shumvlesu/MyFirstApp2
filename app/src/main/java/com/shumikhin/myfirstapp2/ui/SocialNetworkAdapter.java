@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shumikhin.myfirstapp2.R;
@@ -23,11 +24,15 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
     private OnItemClickListener itemClickListener; // Слушатель будет устанавливаться извне
     private static final String TAG = "SocialNetworkAdapter";
     private CardsSource dataSource;
+    private final Fragment fragment;
+    private int menuPosition;
+
 
     // Передаём в конструктор источник данных
     // В нашем случае это массив, но может быть и запрос к БД
-    public SocialNetworkAdapter(CardsSource dataSource) {
+    public SocialNetworkAdapter(CardsSource dataSource, Fragment fragment) {
         this.dataSource = dataSource;
+        this.fragment = fragment;
         Log.d(TAG, "start");
     }
 
@@ -89,6 +94,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             image = itemView.findViewById(R.id.imageView);
             like = itemView.findViewById(R.id.like);
 
+            registerContextMenu(itemView);
 
             //Область текста ответственная на обработку нажатий+++++++
             // Обработчик нажатий на этом ViewHolder
@@ -99,6 +105,29 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             });
             //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+            // Обработчик нажатий на картинке
+            image.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    menuPosition = getLayoutPosition();
+                    itemView.showContextMenu(10, 10);
+                    return true;
+                }
+            });
+
+        }
+
+        //Фрагмент передаётся для вызова метода registerForContextMenu(). Повесим контекстное меню на
+        //весь макет CardView.
+        private void registerContextMenu(@NonNull View itemView) {
+            if (fragment != null){
+                itemView.setOnLongClickListener(v -> {
+                    //getLayoutPosition() показывает информацию о положении ViewHolder в ресайклвью
+                    menuPosition = getLayoutPosition();
+                    return false;
+                });
+                fragment.registerForContextMenu(itemView);
+            }
         }
 
         public void setData(CardData cardData){
@@ -122,12 +151,18 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
         this.itemClickListener = itemClickListener;
     }
 
+
     // Интерфейс для обработки нажатий, как в ListView
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
-
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    public int getMenuPosition() {
+        return menuPosition;
+    }
+
+
 
 }
 

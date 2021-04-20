@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
     }
 
     private void addFragment(Fragment fragment) {
