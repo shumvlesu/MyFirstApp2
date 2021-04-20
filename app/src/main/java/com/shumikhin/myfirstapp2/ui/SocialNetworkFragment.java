@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +31,7 @@ public class SocialNetworkFragment extends Fragment {
         return new SocialNetworkFragment();
     }
 
+    private static final int MY_DEFAULT_DURATION = 500;
     private CardsSource data;
     private SocialNetworkAdapter adapter;
     private RecyclerView recyclerView;
@@ -72,13 +74,25 @@ public class SocialNetworkFragment extends Fragment {
                 data.addCardData(new CardData("Заголовок " + data.size(), "Описание " + data.size(), R.drawable.cat1, false));
                 //оповещаем наш ресайклвью где добавился элемент (в конце)
                 adapter.notifyItemInserted(data.size() - 1);
+
                 //и скролим на эту позицию список
-                recyclerView.scrollToPosition(data.size() - 1);
+                //recyclerView.scrollToPosition(data.size() - 1);
+                //скролим с анимацией
+                recyclerView.smoothScrollToPosition(data.size() - 1);
+
                 return true;
             case R.id.action_clear:
-                data.clearCardData();
+
+                //data.clearCardData();
                 //оповещаем наш ресайклвью
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
+
+                //Более интересный с точки зрения эстетики вариант
+                while (data.size() != 0) {
+                    data.deleteCardData(0);
+                    adapter.notifyItemRemoved(0);
+                }
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -117,17 +131,28 @@ public class SocialNetworkFragment extends Fragment {
         //Устанавливаем адаптер для RecyclerView
         recyclerView.setAdapter(adapter);
 
-
         // Добавим разделитель карточек
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
 
 //        final int version = Build.VERSION.SDK_INT;
 //        if (version >= 21) {
-//            itemDecoration.setDrawable(ResourcesCompat.getDrawable(R.drawable.separator, 0, null));
+        itemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.separator));
 //        } else {
-        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator, null));
+        //itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator, null)); //устарело
 //        }
         recyclerView.addItemDecoration(itemDecoration);
+
+
+        //Анимация recyclerView
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Установим анимацию. А чтобы было хорошо заметно, сделаем анимацию долгой
+        DefaultItemAnimator animator = new DefaultItemAnimator();
+        //скорость анимации при добавлении
+        animator.setAddDuration(MY_DEFAULT_DURATION);
+        //скорость анимации при удалении
+        animator.setRemoveDuration(MY_DEFAULT_DURATION);
+        recyclerView.setItemAnimator(animator);
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
         //Область текста ответственная на обработку нажатий+++++++
@@ -156,11 +181,11 @@ public class SocialNetworkFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int position = adapter.getMenuPosition();
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_update:
                 //по сути оставим все тоже самое но только поменяем заголовок карточки
                 data.updateCardData(position,
-                                new CardData("Кадр " + position,
+                        new CardData("Кадр " + position,
                                 data.getCardData(position).getDescription(),
                                 data.getCardData(position).getPicture(),
                                 false));
