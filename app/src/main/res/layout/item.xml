@@ -60,5 +60,14 @@
             android:textColor="#FFF8E1"
             android:textSize="@dimen/textDescription"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="TextView" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

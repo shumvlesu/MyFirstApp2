@@ -17,6 +17,8 @@ import com.shumikhin.myfirstapp2.R;
 import com.shumikhin.myfirstapp2.data.CardData;
 import com.shumikhin.myfirstapp2.data.CardsSource;
 
+import java.text.SimpleDateFormat;
+
 
 //это класс для управления адаптером
 public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdapter.ViewHolder> {
@@ -85,6 +87,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
         private TextView description;
         private AppCompatImageView image;
         private CheckBox like;
+        private TextView date;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -93,6 +96,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             description = itemView.findViewById(R.id.description);
             image = itemView.findViewById(R.id.imageView);
             like = itemView.findViewById(R.id.like);
+            date = itemView.findViewById(R.id.date);
 
             registerContextMenu(itemView);
 
@@ -135,6 +139,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             description.setText(cardData.getDescription());
             like.setChecked(cardData.isLike());
             image.setImageResource(cardData.getPicture());
+            date.setText(new SimpleDateFormat("dd-MM-yy").format(cardData.getDate()));
         }
 
         //public TextView getTextView() {
