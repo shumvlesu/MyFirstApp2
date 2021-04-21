@@ -1,5 +1,6 @@
 package com.shumikhin.myfirstapp2.ui;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -20,21 +21,42 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.shumikhin.myfirstapp2.MainActivity;
+import com.shumikhin.myfirstapp2.Navigation;
 import com.shumikhin.myfirstapp2.R;
 import com.shumikhin.myfirstapp2.data.CardData;
 import com.shumikhin.myfirstapp2.data.CardsSource;
 import com.shumikhin.myfirstapp2.data.CardsSourceImpl;
+import com.shumikhin.myfirstapp2.observe.Observer;
+import com.shumikhin.myfirstapp2.observe.Publisher;
 
 public class SocialNetworkFragment extends Fragment {
+
+    private static final int MY_DEFAULT_DURATION = 500;
+
+    private CardsSource data;
+    private SocialNetworkAdapter adapter;
+    private RecyclerView recyclerView;
+    private Navigation navigation;
+    private Publisher publisher;
+    // признак, что при повторном открытии фрагмента
+    // (возврате из фрагмента, добавляющего запись)
+    // надо прыгнуть на последнюю запись
+    private boolean moveToLastPosition;
+
 
     public static SocialNetworkFragment newInstance() {
         return new SocialNetworkFragment();
     }
 
-    private static final int MY_DEFAULT_DURATION = 500;
-    private CardsSource data;
-    private SocialNetworkAdapter adapter;
-    private RecyclerView recyclerView;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Получим источник данных для списка
+        // Поскольку onCreateView запускается каждый раз
+        // при возврате в фрагмент, данные надо создавать один раз
+        data = new CardsSourceImpl(getResources()).init();
+    }
 
 
     @Override
@@ -42,11 +64,15 @@ public class SocialNetworkFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_socialnetwork, container, false);
 
-        //ищем наш ресайкл вью у фрагмента
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
 
-        // Получим источник данных для списка
-        data = new CardsSourceImpl(getResources()).init();
+        //ищем наш ресайкл вью у фрагмента
+        //RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
+
+        //TODO в методичке 9 урока по созданию DatePicker и реализации паттерна наблюдатель
+        // тут надо закоментить строку. data = new CardsSourceImpl(getResources()).init();
+
+        //Получим источник данных для списка
+        //data = new CardsSourceImpl(getResources()).init();
 
         //Инициализируем менеджер для recyclerView в отдельном методе, так удобней
         //initRecyclerView(recyclerView, data);
@@ -56,6 +82,21 @@ public class SocialNetworkFragment extends Fragment {
         setHasOptionsMenu(true);
 
         return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity)context;
+        navigation = activity.getNavigation();
+        publisher = activity.getPublisher();
+    }
+
+    @Override
+    public void onDetach() {
+        navigation = null;
+        publisher = null;
+        super.onDetach();
     }
 
 
@@ -71,14 +112,32 @@ public class SocialNetworkFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                data.addCardData(new CardData("Заголовок " + data.size(), "Описание " + data.size(), R.drawable.cat1, false));
-                //оповещаем наш ресайклвью где добавился элемент (в конце)
-                adapter.notifyItemInserted(data.size() - 1);
+//                data.addCardData(new CardData("Заголовок " + data.size(), "Описание " + data.size(), R.drawable.cat1, false));
+//                //оповещаем наш ресайклвью где добавился элемент (в конце)
+//                adapter.notifyItemInserted(data.size() - 1);
+//
+//                //и скролим на эту позицию список
+//                //recyclerView.scrollToPosition(data.size() - 1);
+//                //скролим с анимацией
+//                recyclerView.smoothScrollToPosition(data.size() - 1);
 
-                //и скролим на эту позицию список
-                //recyclerView.scrollToPosition(data.size() - 1);
-                //скролим с анимацией
-                recyclerView.smoothScrollToPosition(data.size() - 1);
+                //После того как завершится редактирование элемента в новом фрагменте, мы вернёмся в метод
+                //обратного вызова наблюдателя Observer.updateCardData(), система начнёт обновлять этот
+                //фрагмент и вызовет метод onCreateView() повторно. Нам придётся пересоздать все элементы, а
+                //также адаптер. Поэтому вводится признак moveToLastPosition, означающий, что мы только что
+                //добавляли данные, чтобы перепрыгнуть на последний элемент. В методе initRecyclerView()
+                //вызывается переход на последний элемент.
+                navigation.addFragment(CardFragment.newInstance(), true);
+                publisher.subscribe(new Observer() {
+                    @Override
+                    public void updateCardData(CardData cardData) {
+                        data.addCardData(cardData);
+                        adapter.notifyItemInserted(data.size() - 1);
+                        // это сигнал, чтобы вызванный метод onCreateView
+                        // перепрыгнул на конец списка
+                        moveToLastPosition = true;
+                    }
+                });
 
                 return true;
             case R.id.action_clear:
@@ -101,8 +160,9 @@ public class SocialNetworkFragment extends Fragment {
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_lines);
+
         // Получим источник данных для списка
-        data = new CardsSourceImpl(getResources()).init();
+        //data = new CardsSourceImpl(getResources()).init();
         initRecyclerView();
     }
 
@@ -154,6 +214,11 @@ public class SocialNetworkFragment extends Fragment {
         recyclerView.setItemAnimator(animator);
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+        //надо перекрутить список в нсамый низ
+        if (moveToLastPosition){
+            recyclerView.smoothScrollToPosition(data.size() - 1);
+            moveToLastPosition = false;
+        }
 
         //Область текста ответственная на обработку нажатий+++++++
         // Установим слушателя
@@ -184,13 +249,29 @@ public class SocialNetworkFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_update:
                 //по сути оставим все тоже самое но только поменяем заголовок карточки
-                data.updateCardData(position,
-                        new CardData("Кадр " + position,
-                                data.getCardData(position).getDescription(),
-                                data.getCardData(position).getPicture(),
-                                false));
-                //обновляем ресайкл
-                adapter.notifyItemChanged(position);
+//                data.updateCardData(position,
+//                        new CardData("Кадр " + position,
+//                                data.getCardData(position).getDescription(),
+//                                data.getCardData(position).getPicture(),
+//                                false));
+//                //обновляем ресайкл
+//                adapter.notifyItemChanged(position);
+
+                //После того как завершится редактирование элемента в новом фрагменте, мы вернёмся в метод
+                //обратного вызова наблюдателя Observer.updateCardData(), система начнёт обновлять этот
+                //фрагмент и вызовет метод onCreateView() повторно. Нам придётся пересоздать все элементы, а
+                //также адаптер. Поэтому вводится признак moveToLastPosition, означающий, что мы только что
+                //добавляли данные, чтобы перепрыгнуть на последний элемент. В методе initRecyclerView()
+                //вызывается переход на последний элемент.
+                navigation.addFragment(CardFragment.newInstance(data.getCardData(position)), true);
+                publisher.subscribe(new Observer() {
+                    @Override
+                    public void updateCardData(CardData cardData) {
+                        data.updateCardData(position, cardData);
+                        adapter.notifyItemChanged(position);
+                    }
+                });
+
                 return true;
             case R.id.action_delete:
                 data.deleteCardData(position);
