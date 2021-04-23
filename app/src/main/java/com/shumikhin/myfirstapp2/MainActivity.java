@@ -40,16 +40,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Устарело, теперь пользуемся классом навигатор
-//    private void addFragment(Fragment fragment) {
-//        //Получить менеджер фрагментов
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        // Открыть транзакцию
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.my_fragment_container, fragment);
-//        fragmentTransaction.addToBackStack(null);
-//        // Закрыть транзакцию
-//        fragmentTransaction.commit();
-//    }
+    //  private void addFragment(Fragment fragment) {
+    //  //Получить менеджер фрагментов
+    //  FragmentManager fragmentManager = getSupportFragmentManager();
+    //  // Открыть транзакцию
+    //  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    //  fragmentTransaction.replace(R.id.my_fragment_container, fragment);
+    //  fragmentTransaction.addToBackStack(null);
+    //  // Закрыть транзакцию
+    //  fragmentTransaction.commit();
+    //}
 
     @Override
     public boolean onSupportNavigateUp() {
