@@ -64,14 +64,10 @@ public class SocialNetworkFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_socialnetwork, container, false);
 
-
         //ищем наш ресайкл вью у фрагмента
-        //RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
 
-        //TODO в методичке 9 урока по созданию DatePicker и реализации паттерна наблюдатель
-        // тут надо закоментить строку. data = new CardsSourceImpl(getResources()).init();
-
-        //Получим источник данных для списка
+        // Получим источник данных для списка
         //data = new CardsSourceImpl(getResources()).init();
 
         //Инициализируем менеджер для recyclerView в отдельном методе, так удобней
@@ -160,6 +156,8 @@ public class SocialNetworkFragment extends Fragment {
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_lines);
+        //TODO в методичке 9 урока по созданию DatePicker и реализации паттерна наблюдатель
+        // тут надо закоментить строку. data = new CardsSourceImpl(getResources()).init();
 
         // Получим источник данных для списка
         //data = new CardsSourceImpl(getResources()).init();
