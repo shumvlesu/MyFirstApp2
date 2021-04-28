@@ -4,6 +4,7 @@ package com.shumikhin.myfirstapp2.data;
 //Возможно, когда-нибудь мы поменяем реализацию интерфейса и будем доставать данные из базы
 //данных, а не из ресурсов.
 public interface CardsSource {
+    CardsSource init(CardsSourceResponse cardsSourceResponse);
     CardData getCardData(int position);
     int size();
     void deleteCardData(int position);

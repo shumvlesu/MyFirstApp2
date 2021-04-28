@@ -7,6 +7,7 @@ import java.util.Date;
 
 //класс данных (он же pogo объект) — содержимое карточки
 public class CardData implements Parcelable {
+    private String id;                // идентификатор по которому мы понимаем какая запись редактируется или удаляется
     private final String title;       // заголовок
     private final String description; // описание
     private final int picture;        // изображение
@@ -72,6 +73,13 @@ public class CardData implements Parcelable {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
     }
 
 }
