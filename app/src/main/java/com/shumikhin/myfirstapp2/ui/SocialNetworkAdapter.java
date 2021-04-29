@@ -32,10 +32,15 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
 
     // Передаём в конструктор источник данных
     // В нашем случае это массив, но может быть и запрос к БД
-    public SocialNetworkAdapter(CardsSource dataSource, Fragment fragment) {
-        this.dataSource = dataSource;
+    public SocialNetworkAdapter(Fragment fragment) {
+        //this.dataSource = dataSource;
         this.fragment = fragment;
         Log.d(TAG, "start");
+    }
+
+    public void setDataSource(CardsSource dataSource){
+        this.dataSource = dataSource;
+        notifyDataSetChanged();
     }
 
     // Создать новый элемент пользовательского интерфейса
@@ -83,11 +88,11 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         //private TextView textView;
-        private TextView title;
-        private TextView description;
-        private AppCompatImageView image;
-        private CheckBox like;
-        private TextView date;
+        private final TextView title;
+        private final TextView description;
+        private final AppCompatImageView image;
+        private final CheckBox like;
+        private final TextView date;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -110,13 +115,10 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             // Обработчик нажатий на картинке
-            image.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    menuPosition = getLayoutPosition();
-                    itemView.showContextMenu(10, 10);
-                    return true;
-                }
+            image.setOnLongClickListener(v -> {
+                menuPosition = getLayoutPosition();
+                itemView.showContextMenu(10, 10);
+                return true;
             });
 
         }

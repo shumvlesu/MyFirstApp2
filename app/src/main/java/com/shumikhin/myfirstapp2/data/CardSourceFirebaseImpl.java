@@ -19,16 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CardsSourceFirebaseImpl implements CardsSource {
+public class CardSourceFirebaseImpl implements CardsSource {
 
     //идентефикатор нашей коллекции карточек
     private static final String CARDS_COLLECTION = "cards";
     //для отладки
-    private static final String TAG = "[CardsSourceFirebaseImpl]";
+    private static final String TAG = "[CrdSrcFirebaseImpl]";
     // База данных Firestore
-    private FirebaseFirestore store = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore store = FirebaseFirestore.getInstance();
     // Коллекция наших карт, мы их получили по наименованию константы CARDS_COLLECTION - cards
-    private CollectionReference collection = store.collection(CARDS_COLLECTION);
+    private final CollectionReference collection = store.collection(CARDS_COLLECTION);
     // Загружаемый список карточек
     private List<CardData> cardsData = new ArrayList<CardData>();
 
@@ -47,7 +47,7 @@ public class CardsSourceFirebaseImpl implements CardsSource {
     public CardsSource init(final CardsSourceResponse cardsSourceResponse) {
         // Получить всю коллекцию, отсортированную по полю «Дата»
         collection.orderBy(CardDataMapping.Fields.DATE, Query.Direction.DESCENDING).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { //addOnCompleteListener возвращает task
                     // При удачном считывании данных загрузим список карточек
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -60,7 +60,7 @@ public class CardsSourceFirebaseImpl implements CardsSource {
                                 cardsData.add(cardData);
                             }
                             Log.d(TAG, "success " + cardsData.size() + " qnt");
-                            cardsSourceResponse.initialized(CardsSourceFirebaseImpl.this);
+                            cardsSourceResponse.initialized(CardSourceFirebaseImpl.this);
                         } else {
                             Log.d(TAG, "get failed with ", task.getException());
                         }

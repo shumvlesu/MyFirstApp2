@@ -25,8 +25,9 @@ import com.shumikhin.myfirstapp2.MainActivity;
 import com.shumikhin.myfirstapp2.Navigation;
 import com.shumikhin.myfirstapp2.R;
 import com.shumikhin.myfirstapp2.data.CardData;
+import com.shumikhin.myfirstapp2.data.CardSourceFirebaseImpl;
 import com.shumikhin.myfirstapp2.data.CardsSource;
-import com.shumikhin.myfirstapp2.data.CardsSourceImpl;
+import com.shumikhin.myfirstapp2.data.CardsSourceResponse;
 import com.shumikhin.myfirstapp2.observe.Observer;
 import com.shumikhin.myfirstapp2.observe.Publisher;
 
@@ -42,21 +43,23 @@ public class SocialNetworkFragment extends Fragment {
     // признак, что при повторном открытии фрагмента
     // (возврате из фрагмента, добавляющего запись)
     // надо прыгнуть на последнюю запись
-    private boolean moveToLastPosition;
+    //private boolean moveToLastPosition;
+
+    private boolean moveToFirstPosition;
 
 
     public static SocialNetworkFragment newInstance() {
         return new SocialNetworkFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Получим источник данных для списка
-        // Поскольку onCreateView запускается каждый раз
-        // при возврате в фрагмент, данные надо создавать один раз
-        data = new CardsSourceImpl(getResources()).init();
-    }
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        // Получим источник данных для списка
+//        // Поскольку onCreateView запускается каждый раз
+//        // при возврате в фрагмент, данные надо создавать один раз
+//        data = new CardsSourceImpl(getResources()).init();
+//    }
 
 
     @Override
@@ -76,6 +79,14 @@ public class SocialNetworkFragment extends Fragment {
 
         //У нас есть необязательное меню которое мы хотим увидеть в этом фрагменте.
         setHasOptionsMenu(true);
+
+        data = new CardSourceFirebaseImpl().init(new CardsSourceResponse() {
+            @Override
+            public void initialized(CardsSource cardsData) {
+                adapter.notifyDataSetChanged();
+            }
+        });
+        adapter.setDataSource(data);
 
         return view;
     }
@@ -106,51 +117,7 @@ public class SocialNetworkFragment extends Fragment {
     //тут переопределяем элементы меню
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add:
-//                data.addCardData(new CardData("Заголовок " + data.size(), "Описание " + data.size(), R.drawable.cat1, false));
-//                //оповещаем наш ресайклвью где добавился элемент (в конце)
-//                adapter.notifyItemInserted(data.size() - 1);
-//
-//                //и скролим на эту позицию список
-//                //recyclerView.scrollToPosition(data.size() - 1);
-//                //скролим с анимацией
-//                recyclerView.smoothScrollToPosition(data.size() - 1);
-
-                //После того как завершится редактирование элемента в новом фрагменте, мы вернёмся в метод
-                //обратного вызова наблюдателя Observer.updateCardData(), система начнёт обновлять этот
-                //фрагмент и вызовет метод onCreateView() повторно. Нам придётся пересоздать все элементы, а
-                //также адаптер. Поэтому вводится признак moveToLastPosition, означающий, что мы только что
-                //добавляли данные, чтобы перепрыгнуть на последний элемент. В методе initRecyclerView()
-                //вызывается переход на последний элемент.
-                navigation.addFragment(CardFragment.newInstance(), true);
-                publisher.subscribe(new Observer() {
-                    @Override
-                    public void updateCardData(CardData cardData) {
-                        data.addCardData(cardData);
-                        adapter.notifyItemInserted(data.size() - 1);
-                        // это сигнал, чтобы вызванный метод onCreateView
-                        // перепрыгнул на конец списка
-                        moveToLastPosition = true;
-                    }
-                });
-
-                return true;
-            case R.id.action_clear:
-
-                //data.clearCardData();
-                //оповещаем наш ресайклвью
-                //adapter.notifyDataSetChanged();
-
-                //Более интересный с точки зрения эстетики вариант
-                while (data.size() != 0) {
-                    data.deleteCardData(0);
-                    adapter.notifyItemRemoved(0);
-                }
-
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return onItemSelected(item.getItemId()) || super.onOptionsItemSelected(item);
     }
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -184,7 +151,7 @@ public class SocialNetworkFragment extends Fragment {
 
         // Установим адаптер
         // В адапторе (SocialNetworkAdapter) мы заполняем данные из массива и пихаем наш фрагмент (this) в адаптер для привязки контекстного меню ему
-        adapter = new SocialNetworkAdapter(data, this);
+        adapter = new SocialNetworkAdapter(this);
 
         //Устанавливаем адаптер для RecyclerView
         recyclerView.setAdapter(adapter);
@@ -213,9 +180,14 @@ public class SocialNetworkFragment extends Fragment {
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         //надо перекрутить список в нсамый низ
-        if (moveToLastPosition){
-            recyclerView.smoothScrollToPosition(data.size() - 1);
-            moveToLastPosition = false;
+//        if (moveToLastPosition){
+//            recyclerView.smoothScrollToPosition(data.size() - 1);
+//            moveToLastPosition = false;
+//        }
+        //Теперь крутим на первую позицию
+        if (moveToFirstPosition && data.size() > 0){
+            recyclerView.scrollToPosition(0);
+            moveToFirstPosition = false;
         }
 
         //Область текста ответственная на обработку нажатий+++++++
@@ -243,43 +215,47 @@ public class SocialNetworkFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        int position = adapter.getMenuPosition();
-        switch (item.getItemId()) {
-            case R.id.action_update:
-                //по сути оставим все тоже самое но только поменяем заголовок карточки
-//                data.updateCardData(position,
-//                        new CardData("Кадр " + position,
-//                                data.getCardData(position).getDescription(),
-//                                data.getCardData(position).getPicture(),
-//                                false));
-//                //обновляем ресайкл
-//                adapter.notifyItemChanged(position);
-
-                //После того как завершится редактирование элемента в новом фрагменте, мы вернёмся в метод
-                //обратного вызова наблюдателя Observer.updateCardData(), система начнёт обновлять этот
-                //фрагмент и вызовет метод onCreateView() повторно. Нам придётся пересоздать все элементы, а
-                //также адаптер. Поэтому вводится признак moveToLastPosition, означающий, что мы только что
-                //добавляли данные, чтобы перепрыгнуть на последний элемент. В методе initRecyclerView()
-                //вызывается переход на последний элемент.
-                navigation.addFragment(CardFragment.newInstance(data.getCardData(position)), true);
-                publisher.subscribe(new Observer() {
-                    @Override
-                    public void updateCardData(CardData cardData) {
-                        data.updateCardData(position, cardData);
-                        adapter.notifyItemChanged(position);
-                    }
-                });
-
-                return true;
-            case R.id.action_delete:
-                data.deleteCardData(position);
-                //обновляем ресайкл для обновления при удалении элемента
-                adapter.notifyItemRemoved(position);
-                return true;
-        }
-        return super.onContextItemSelected(item);
+        return onItemSelected(item.getItemId()) || super.onContextItemSelected(item);
     }
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+    private boolean onItemSelected(int menuItemId) {
+        switch (menuItemId) {
+            case R.id.action_add:
+                navigation.addFragment(CardFragment.newInstance(), true);
+                publisher.subscribe(new Observer() {
+                    @Override
+                    public void updateCardData(CardData cardData) {
+                        data.addCardData(cardData);
+                        adapter.notifyItemInserted(data.size() - 1);
+                        // это сигнал, чтобы вызванный метод onCreateView
+                        // перепрыгнул на начало списка
+                        moveToFirstPosition = true;
+                    }
+                });
+                return true;
+            case R.id.action_update:
+                final int updatePosition = adapter.getMenuPosition();
+                navigation.addFragment(CardFragment.newInstance(data.getCardData(updatePosition) ), true);
+                publisher.subscribe(new Observer() {
+                    @Override
+                    public void updateCardData(CardData cardData) {
+                        data.updateCardData(updatePosition, cardData);
+                        adapter.notifyItemChanged(updatePosition);
+                    }
+                });
+                return true;
+            case R.id.action_delete:
+                int deletePosition = adapter.getMenuPosition();
+                data.deleteCardData(deletePosition);
+                adapter.notifyItemRemoved(deletePosition);
+                return true;
+            case R.id.action_clear:
+                data.clearCardData();
+                adapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
+    }
 
 }

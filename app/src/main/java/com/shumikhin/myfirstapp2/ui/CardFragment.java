@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.shumikhin.myfirstapp2.MainActivity;
 import com.shumikhin.myfirstapp2.R;
 import com.shumikhin.myfirstapp2.data.CardData;
+import com.shumikhin.myfirstapp2.data.PictureIndexConverter;
 import com.shumikhin.myfirstapp2.observe.Publisher;
 
 import java.util.Calendar;
@@ -103,16 +104,22 @@ public class CardFragment extends Fragment {
         String title = this.title.getText().toString();
         String description = this.description.getText().toString();
         Date date = getDateFromDatePicker();
-        int picture;
-        boolean like;
+//        int picture;
+//        boolean like;
         if (cardData != null) {
-            picture = cardData.getPicture();
-            like = cardData.isLike();
+//            picture = cardData.getPicture();
+//            like = cardData.isLike();
+            CardData answer;
+            answer = new CardData(title, description, cardData.getPicture(), cardData.isLike(), date);
+            answer.setId(cardData.getId());
+            return answer;
         } else {
-            picture = R.drawable.cat1;
-            like = false;
+//            picture = R.drawable.cat1;
+//            like = false;
+            int picture = PictureIndexConverter.getPictureByIndex(PictureIndexConverter.randomPictureIndex());
+            return new CardData(title, description, picture, false, date);
         }
-        return new CardData(title, description, picture, like, date);
+        //return new CardData(title, description, picture, like, date);
     }
 
     // Получение даты из DatePicker

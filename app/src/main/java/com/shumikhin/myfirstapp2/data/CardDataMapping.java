@@ -7,6 +7,7 @@ import java.util.Map;
 
 //Класс преобразования данных в словарь Firestore и в объект CardData
 public class CardDataMapping {
+
     public static class Fields {
         public final static String PICTURE = "picture";
         public final static String DATE = "date";
@@ -15,16 +16,22 @@ public class CardDataMapping {
         public final static String LIKE = "like";
     }
 
+    //в объект класса
     public static CardData toCardData(String id, Map<String, Object> doc) {
         long indexPic = (long) doc.get(Fields.PICTURE);
         Timestamp timeStamp = (Timestamp) doc.get(Fields.DATE);
-        CardData answer = new CardData((String) doc.get(Fields.TITLE), (String) doc.get(Fields.DESCRIPTION), PictureIndexConverter.getPictureByIndex((int) indexPic),
-                (boolean) doc.get(Fields.LIKE),
-                timeStamp.toDate());
+        CardData answer = new CardData(
+                                       (String) doc.get(Fields.TITLE)
+                                     , (String) doc.get(Fields.DESCRIPTION)
+                                     , PictureIndexConverter.getPictureByIndex((int) indexPic)
+                                     , (boolean) doc.get(Fields.LIKE),
+                                     timeStamp.toDate()
+                                      );
         answer.setId(id);
         return answer;
     }
 
+    //в документ файербейса
     public static Map<String, Object> toDocument(CardData cardData) {
         Map<String, Object> answer = new HashMap<>();
         answer.put(Fields.TITLE, cardData.getTitle());
