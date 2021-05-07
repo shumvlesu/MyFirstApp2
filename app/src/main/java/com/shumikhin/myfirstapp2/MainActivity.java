@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
         Button alertMultiList = findViewById(R.id.alertDialogListMulti);
         alertMultiList.setOnClickListener(clickAlertDialogListMulti);
+
+        Button alertCustom = findViewById(R.id.alertDialogCustom);
+        alertCustom.setOnClickListener(clickAlertDialogCustom);
 
     }
 
@@ -209,6 +213,21 @@ public class MainActivity extends AppCompatActivity {
                     });
             AlertDialog alert = builder.create();
             alert.show();
+        }
+    };
+
+    private View.OnClickListener clickAlertDialogCustom = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final View contentView = getLayoutInflater().inflate(R.layout.dialog_custom, null);
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(R.string.exclamation)
+                    .setView(contentView)
+                    .setPositiveButton("OK", (dialogInterface, i) -> {
+                        EditText editText = contentView.findViewById(R.id.editText);
+                        String answer = editText.getText().toString();
+                        Toast.makeText(MainActivity.this, answer, Toast.LENGTH_SHORT).show();
+                    }).create().show();
         }
     };
 
