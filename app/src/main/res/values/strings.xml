@@ -12,4 +12,8 @@
     <string name="alert_dialog_list_single">Alert Dialog с выбором одного</string>
     <string name="alert_dialog_list_multi">Alert Dialog с выбором нескольких</string>
     <string name="alert_dialog_custom_form">Alert Dialog с кастомной формой</string>
+    <string name="dialog_builder">Диалог с билдером</string>
+    <string name="dialog_custom">Диалог кастомный</string>
+    <string name="title_dialog">Введите имя</string>
+    <string name="done">готово</string>
 </resources>
