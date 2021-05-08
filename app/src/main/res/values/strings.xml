@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">MyFirstApp2</string>
+    <string name="app_name">Dialog Fragment</string>
+    <string name="dialog_builder">Диалог с билдером</string>
+    <string name="dialog_custom">Диалог кастомный</string>
+    <string name="title_dialog">Введите имя</string>
+    <string name="done">готово</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
